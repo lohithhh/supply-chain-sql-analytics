@@ -101,3 +101,45 @@ Analyze historical supplier unit-cost changes to identify purchasing price incre
 The dataset is synthetic. Unit-cost comparisons use the earliest and latest recorded orders for the same supplier and product. These results do not account for inflation, product specification changes, supplier contracts, or external market conditions.
 
 
+## 04 — Procurement Spend
+**Question:** Which suppliers account for the largest ordered procurement value?
+
+**Answer:** Total ordered value across 30 POs is **$470,285**. Prime Industrial is the largest supplier by ordered value at **$77,525 (16.48%)**. Supplier rankings and shares are computed in `sql/04_procurement_spend.sql`.
+
+**Recommendation:** Review supplier spend concentration and prioritize negotiations based on spend and delivery reliability together.
+
+## 05 — Monthly Procurement Trends
+**Question:** How does ordered value change each month?
+
+**Answer:** June 2026 has the highest ordered value (**$117,200**), up **66.48%** from May (**$70,400**). June includes pending POs, so this is **ordered value**, not completed deliveries or payments.
+
+**Recommendation:** Investigate demand, purchasing volume, and unit-price drivers behind spikes.
+
+## 06 — Inventory and Reorder
+**Question:** Which warehouse-product combinations have stock at or below reorder level?
+
+**Answer:** **14 of 32** synthetic warehouse-product stock records are at or below their reorder threshold. The most severe shortage against the threshold is **Control Module at Denver Distribution Center: 3 units on hand versus a reorder level of 25**, a gap of 22 units.
+
+**Recommendation:** Review flagged records for replenishment; actual order quantities require demand forecasts, safety stock, lead times, and existing inbound orders.
+
+## 07 — Warehouse Performance
+**Question:** Which warehouses have the highest ordered value, and how reliable are deliveries?
+
+**Answer:** Dallas Logistics Hub has the highest ordered value (**$130,050), followed by Denver ($127,525**). Denver's on-time rate is 100% among its six delivered POs; Dallas and Atlanta have 0% among their delivered POs. These rates reflect the **supplier/order mix assigned to each warehouse**, not necessarily warehouse operational efficiency.
+
+**Recommendation:** Distinguish supplier inbound delivery performance from warehouse internal processing KPIs.
+
+## 08 — Shipment and Logistics
+**Question:** Which synthetic carrier has the shortest transit time and what is the shipping cost?
+
+**Answer:** All three carriers have eight completed shipments. DHL has the shortest average transit time (**3.75 days**) and lowest average shipping cost (**$91.50); UPS averages 3.88 days / $111.75**, FedEx **4.13 days / $107.25**. All three show 37.5% arrivals on or before the PO expected date.
+
+**Recommendation:** In real data, assess route, weight, distance, shipment service levels, and sample size before selecting carriers. Carrier assignments and costs here were synthetically generated and do not establish real carrier performance.
+
+## Method and limitations
+- Data is invented for SQL portfolio practice, not real-world supplier or carrier performance.
+- Cases 04–05 and 07 use 30 existing purchase orders; Cases 06 and 08 require `database/extra_data.sql` (32 inventory rows and 24 shipment rows).
+- Inventory threshold comparisons use `stock_quantity <= reorder_level`. Being below a reorder level is not necessarily a stockout.
+- On-time shipment arrival compares `arrival_date` with PO `expected_date` for demonstration; real shipment SLAs may differ.
+- Supplier on-time performance uses delivered POs only. All percentages are based on small samples.
+

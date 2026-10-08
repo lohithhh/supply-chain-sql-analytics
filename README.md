@@ -1,156 +1,52 @@
-# Supply Chain SQL Analytics
+# Supply Chain SQL Analytics | Procurement, Inventory & Logistics
 
-## Project Overview
+**Portfolio project** using Python 3, SQLite, SQL window functions, and synthetic manufacturing supply-chain data to answer business questions.
 
-This project demonstrates how SQL and Python can be used to analyze supply chain procurement operations, evaluate supplier performance, monitor purchasing costs, and support data-driven business decisions.
+## Business questions and solutions
 
-The project uses a synthetic manufacturing procurement dataset and SQLite to simulate real-world supply chain analytics scenarios.
+| Case | Question | SQL file | Result |
+|---|---|---|---|
+| 01 | Which suppliers have the longest lead times? | `sql/01_supplier_lead_time.sql` | Pacific Components and Asia Electronics: 17 days average |
+| 02 | Which suppliers deliver on time? | `sql/02_on_time_delivery.sql` | 9 of 24 completed orders on time (37.5%) |
+| 03 | How are supplier unit costs changing? | `sql/03_supplier_cost_analysis.sql` | Northern Materials: +20% first-to-latest recorded unit cost |
+| 04 | Who receives the most procurement spend? | `sql/04_procurement_spend.sql` | Prime Industrial: $77,525 ordered value (16.48%) |
+| 05 | How does spending change monthly? | `sql/05_monthly_procurement_trends.sql` | June: $117,200 ordered value (+66.48% month over month) |
+| 06 | Which inventory items need attention? | `sql/06_inventory_reorder.sql` | 14 of 32 stock records at/below reorder threshold |
+| 07 | Which warehouses handle the most ordered value? | `sql/07_warehouse_performance.sql` | Dallas Logistics Hub: $130,050 |
+| 08 | How do carrier transit times and costs compare? | `sql/08_shipment_logistics.sql` | Synthetic DHL sample: 3.75 days avg transit, $91.50 avg cost |
 
-## Business Objectives
+**Note:** Ordered value includes pending purchase orders and is not the same as invoiced or paid spending. All records are synthetic.
 
-- Evaluate supplier delivery lead times.
-- Measure supplier on-time delivery performance.
-- Analyze historical supplier unit-cost changes.
-- Identify procurement risks and opportunities for operational improvement.
-- Develop reusable SQL queries for business reporting.
+## Technology and techniques
+Python `sqlite3`, SQLite, PyCharm, GitHub; `JOIN`, `CTE`, `CASE`, conditional aggregation, `LAG()`, `RANK()`, `PARTITION BY`, `strftime()`, `julianday()`.
 
-## Technologies Used
+## Database
+Six tables: `suppliers`, `products`, `warehouses`, `purchase_orders`, `inventory`, `shipments`. Sample: 8 suppliers, 8 products, 4 warehouses, 30 POs, 32 inventory records, 24 shipments.
 
-- **SQL (SQLite)** — Data querying and analysis
-- **Python** — Database creation, data loading, and query execution
-- **SQLite3** — Relational database management
-- **PyCharm** — Development environment
-- **Git & GitHub** — Version control and portfolio hosting
-
-## Database Structure
-
-The database includes six relational tables:
-
-| Table | Description |
-|---|---|
-| suppliers | Supplier information and country |
-| products | Product details, categories, and prices |
-| warehouses | Warehouse locations |
-| purchase_orders | Purchase order, cost, and delivery information |
-| inventory | Inventory quantities and reorder levels |
-| shipments | Shipment and transportation information |
-
-The current sample dataset contains 8 suppliers, 8 products, 4 warehouses, and 30 purchase orders.
-
-The inventory and shipments tables are defined in the schema but are not yet populated with sample data.
-
-## Completed SQL Case Studies
-
-### 01 — Supplier Lead Time Analysis
-
-**Business Question:** Which suppliers have the longest delivery lead times?
-
-Calculates average, minimum, and maximum delivery lead times by supplier.
-
-Key findings:
-- Pacific Components and Asia Electronics have the longest average lead times at 17 days.
-- ABC Manufacturing has the shortest average lead time at 6.67 days.
-
-**SQL Concepts:** CTEs, JOINs, AVG(), MIN(), MAX(), COUNT(), date calculations.
-
-### 02 — On-Time Delivery Performance
-
-**Business Question:** Which suppliers consistently meet their expected delivery dates?
-
-Calculates on-time delivery rates, late order counts, and average days late.
-
-Key findings:
-- Overall on-time delivery rate: 37.5%.
-- 15 of 24 completed orders were delivered late.
-- Global Steel Ltd had the highest average delay at 4.67 days.
-
-**SQL Concepts:** Conditional aggregation, CASE, CTEs, JOINs, NULLIF().
-
-### 03 — Supplier Cost Analysis
-
-**Business Question:** How have supplier purchasing prices changed over time?
-
-Uses SQL window functions to compare historical unit costs for the same supplier and product.
-
-Key findings:
-- Northern Materials recorded a 20% cumulative unit-cost increase.
-- Global Steel Ltd recorded a 17.5% cumulative increase.
-- All eight suppliers showed increasing recorded unit costs.
-
-**SQL Concepts:** LAG(), PARTITION BY, ORDER BY, CTEs, JOINs, percentage calculations.
-
-## How to Run the Project
-
-### Requirements
-
-- Python 3
-- SQLite3 (included with standard Python installations)
-
-### Setup
-
-Clone the repository and navigate into the project folder.
-
-Create the database schema:
+## How to run
+From the repository root, using Python 3:
 
 ```bash
 python setup_database.py
-```
-
-Load supplier, product, and warehouse sample data:
-
-```bash
 python load_data.py
-```
-
-Load purchase orders:
-
-```bash
 python load_purchase_orders.py
+python load_extra_data.py
 ```
 
-### Run SQL Case Studies
-
-Supplier Lead Time Analysis:
+Run any case study:
 
 ```bash
-python run_query.py sql/01_supplier_lead_time.sql
+python run_query.py sql/04_procurement_spend.sql
+python run_query.py sql/05_monthly_procurement_trends.sql
+python run_query.py sql/06_inventory_reorder.sql
+python run_query.py sql/07_warehouse_performance.sql
+python run_query.py sql/08_shipment_logistics.sql
 ```
 
-On-Time Delivery Performance:
+The local `database/supply_chain.db` file is generated by the scripts and should not be committed. The setup and initial data scripts belong to the existing repository; the portfolio update adds the extra-data loader and SQL files for cases 04–08.
 
-```bash
-python run_query.py sql/02_on_time_delivery.sql
-```
+## Findings and recommendations
+See `insights/business_findings.md` (Cases 01–03) and `insights/case_studies_04_to_08.md` (Cases 04–08).
 
-Supplier Cost Analysis:
-
-```bash
-python run_query.py sql/03_supplier_cost_analysis.sql
-```
-
-The scripts use Python's built-in `sqlite3` library to execute SQL against the local SQLite database.
-
-## Business Insights
-
-Detailed analysis and recommendations are documented in:
-
-`insights/business_findings.md`
-
-These findings demonstrate how procurement analysts can use supplier performance and purchasing data to identify operational risks.
-
-## Future Enhancements
-
-- Procurement spending analysis
-- Supplier cost impact analysis
-- Inventory and reorder-level analysis
-- Shipment performance analysis
-- Power BI dashboards
-- Additional synthetic data for more realistic performance metrics
-
-## Data Disclaimer
-
-All data used in this project is synthetic and intended for educational and portfolio demonstration purposes. Results do not represent actual suppliers or business operations.
-
-## Project Status
-
-**In Progress** — Three SQL case studies completed. Additional procurement, inventory, and shipment analyses are planned.
+## Limitations and next steps
+Synthetic data, limited sample size, and deliberately simplified procurement/logistics assumptions. Possible extensions: real-world-style transaction volume, demand forecasting, landed cost, Power BI dashboard, and automated tests.
